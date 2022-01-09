@@ -4,11 +4,14 @@ var jumpBool = true;
 var collapse;
 var playerHit;
 var boolGame = false;
+var canvasUpdate;
+var screen = 0;
 
 function startGame() {
-  console.log("This");
+  // console.log("This");
   gameCanvas.start();
-  intervalStart(true)
+  screen = 1;
+
   player = new component(30, 320, "blue", 30, 30);
   // enemy = new component(800, 330, "green", 20, 20);
   // enemy1 = new component(800,130,"yellow",20,20);
@@ -17,19 +20,9 @@ function startGame() {
   //   console.log(collapse);
 }
 
-function intervalStart(bool) {
-
-  if(bool) {
-    var canvasUpdate = setInterval(updateGameCanvas, 15);
-  } else {
-    clearInterval(canvasUpdate);
-  }
-
-}
-
 function createEnemy(number) {
   console.log("Create enemy");
-  enemy[number] = new Enemy();
+  enemy[number] = new Enemy(Math.floor(Math.random() * 10) + 7);
 }
 
 var gameCanvas = {
@@ -85,19 +78,29 @@ function component(x, y, color, width, height) {
 }
 
 function updateGameCanvas() {
-  if (getDist()) {intervalStart(false), boolGame = false; console.log("Stop the game"); return;
-  }
-  gameCanvas.clear();
+  if (screen === 0) {
+    player.update();
+  } else if (screen === 1) {
+    if (getDist()) {
+      screen = 0;
+      boolGame = false;
+      return;
+    }
+    gameCanvas.clear();
 
-  player.newPos();
-  player.update();
+    player.newPos();
+    player.update();
 
-  if (enemy[0].x <= 0) {
-    enemy.shift();
-    createEnemy(0);
-  } else {
+    if (enemy[0].x <= 0) {
+      enemy.shift();
+      createEnemy(0);
+    } else {
+      enemy[0].show();
+      enemy[0].move();
+    }
+  } else if (screen === 2) {
+    player.update();
     enemy[0].show();
-    enemy[0].move();
   }
 
   // setInterval(updateEnemy(enemy), 4000);
@@ -107,7 +110,7 @@ window.addEventListener(
   "keypress",
   function (event) {
     if (event.code === "Space" && jumpBool) {
-      console.log("This is running");
+      // console.log("This is running");
       if (boolGame) {
         player.speedY -= 3;
         jumpBool = false;
@@ -116,12 +119,19 @@ window.addEventListener(
         boolGame = true;
       }
     }
-    if (event.code === "KeyM") {
-      location.reload();
-    }
   },
   true
 );
+
+function click_function() {
+  if (boolGame) {
+    player.speedY -= 3;
+    jumpBool = false;
+  } else {
+    startGame();
+    boolGame = true;
+  }
+}
 
 function getDist() {
   var distX = player.x + player.width / 2 - (enemy[0].x + enemy[0].width / 2);
@@ -129,7 +139,7 @@ function getDist() {
   var distXY = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
 
   if (distXY < player.width / 2 + enemy[0].width / 2) {
-    console.log("You got hit");
+    // console.log("You got hit");
     playerHit = true;
   } else {
     //console.log((distXY) + " "+  (player.width / 2 + enemy[0].width / 2));
@@ -141,3 +151,5 @@ function getDist() {
   // console.log(dist);
   // }
 }
+
+canvasUpdate = setInterval(updateGameCanvas, 15);
