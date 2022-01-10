@@ -146,6 +146,10 @@ function getDist() {
 function levelDesign() {
   let c = gameCanvas.canvas;
   let ctx = c.getContext("2d");
+
+  ctx.fillStyle = "rgb(173,216,230)";
+  ctx.fillRect(0, 0, c.width, c.height);
+
   ctx.fillStyle = "gray";
   ctx.fillRect(0, c.height - 10, c.width, 10);
 }
