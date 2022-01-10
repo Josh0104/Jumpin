@@ -1,28 +1,39 @@
 var player;
-var enemy = [];
+var enemies = [];
 var jumpBool = true;
 var collapse;
 var playerHit;
 var boolGame = false;
 var canvasUpdate;
-var screen = 0;
+var gameScreen;
+var boolHit = true;
+
 
 function startGame() {
   // console.log("This");
   gameCanvas.start();
-  screen = 1;
-
-  player = new component(30, 320, "blue", 30, 30);
+  gameScreen = 1;
+  player = new Player(30, 320, "blue", 30, 30);
+  enemies = [];
+ 
   // enemy = new component(800, 330, "green", 20, 20);
   // enemy1 = new component(800,130,"yellow",20,20);
   createEnemy(0);
+  // setTimeout(() => {
+  //   createEnemy(1);
+  // }, 1000);
 
   //   console.log(collapse);
 }
 
 function createEnemy(number) {
-  console.log("Create enemy");
-  enemy[number] = new Enemy(Math.floor(Math.random() * 10) + 7);
+  boolHit = true;
+  if (number === 0) {
+    enemies[number] = new Enemy(5, "green");
+  } else {
+    enemies[number] = new Enemy(5, "red");
+  }
+  //Math.floor(Math.random() * 10) + 7}
 }
 
 var gameCanvas = {
@@ -39,51 +50,20 @@ var gameCanvas = {
   },
 };
 
-function component(x, y, color, width, height) {
-  this.width = width;
-  this.height = height;
-  this.x = x;
-  this.y = y;
-  this.speedX = 0;
-  this.speedY = 0;
-  this.gravity = 0.5;
-  this.gravitySpeed = 0;
-  this.update = function () {
-    ctx = gameCanvas.context;
-    ctx.fillStyle = color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-  };
-  this.newPos = function () {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    this.hitBottom();
-    this.hitTop();
-  };
-
-  this.hitTop = function () {
-    var rockTop = gameCanvas.canvas.height - this.height * 3;
-    if (this.y < rockTop) {
-      this.speedY += 4;
-    }
-  };
-
-  this.hitBottom = function () {
-    var rockBottom = gameCanvas.canvas.height - this.height;
-    if (this.y > rockBottom) {
-      this.y = rockBottom;
-      this.speedY = 0;
-      jumpBool = true;
-    }
-  };
-}
-
 function updateGameCanvas() {
-  if (screen === 0) {
-    player.update();
-  } else if (screen === 1) {
-    if (getDist()) {
-      screen = 0;
+  console.log(gameScreen + " " + boolHit)
+  if (gameScreen === 0) {
+
+  } else if (gameScreen === 1) {
+
+    if (getDist() && boolHit) {
+      console.log(getDist())
+      console.log("Hit")
+      gameScreen = 0;
       boolGame = false;
+      boolHit = false;
+      player = null;
+      enemies = null;
       return;
     }
     gameCanvas.clear();
@@ -91,16 +71,22 @@ function updateGameCanvas() {
     player.newPos();
     player.update();
 
-    if (enemy[0].x <= 0) {
-      enemy.shift();
-      createEnemy(0);
-    } else {
-      enemy[0].show();
-      enemy[0].move();
+    for (let eachEnemy of enemies) {
+      if (eachEnemy.x <= -5 ) {
+        // console.log(enemies);
+        enemies.shift();
+        // console.log(enemies);
+        createEnemy(0);
+        // setTimeout(() => {
+        //   createEnemy(1);
+        // }, Math.floor(Math.random() * 2000) + 1000);
+      } else {
+        eachEnemy.show();
+        eachEnemy.move();
+      }
     }
-  } else if (screen === 2) {
-    player.update();
-    enemy[0].show();
+  } else if (gameScreen === 2) {
+
   }
 
   // setInterval(updateEnemy(enemy), 4000);
@@ -109,7 +95,7 @@ function updateGameCanvas() {
 window.addEventListener(
   "keypress",
   function (event) {
-    if (event.code === "Space" && jumpBool) {
+    if (event.code === "Space") {
       // console.log("This is running");
       if (boolGame) {
         player.speedY -= 3;
@@ -130,21 +116,27 @@ function click_function() {
   } else {
     startGame();
     boolGame = true;
+
+    console.log("Starting the game");
   }
 }
 
 function getDist() {
-  var distX = player.x + player.width / 2 - (enemy[0].x + enemy[0].width / 2);
-  var distY = player.y + player.height / 2 - (enemy[0].y + enemy[0].height / 2);
-  var distXY = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
+  for (let eachEnemy of enemies) {
+    var distX =
+      player.x + player.width / 2 - (eachEnemy.x + eachEnemy.width / 2);
+    var distY =
+      player.y + player.height / 2 - (eachEnemy.y + eachEnemy.height / 2);
+    var distXY = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
 
-  if (distXY < player.width / 2 + enemy[0].width / 2) {
-    // console.log("You got hit");
-    playerHit = true;
-  } else {
-    //console.log((distXY) + " "+  (player.width / 2 + enemy[0].width / 2));
+    if (distXY < player.width / 2 + eachEnemy.width / 2) {
+      // console.log("You got hit");
+      playerHit = true;
+    } else { 
+      playerHit = false;
+      //console.log((distXY) + " "+  (player.width / 2 + enemy[0].width / 2));
+    }
   }
-
   return playerHit;
 
   // while(true){
