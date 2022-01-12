@@ -7,6 +7,8 @@ var boolGame = false;
 var canvasUpdate;
 var gameScreen = 0;
 var boolHit = true;
+var point = 0;
+var jumpSound = new Audio("../sound/jump.wav")
 
 function startGame() {
   // console.log("This");
@@ -77,7 +79,7 @@ function updateGameCanvas() {
         enemies.shift();
         // console.log(enemies);
         createEnemy(0);
-        createEnemy(0);
+        point++;
       } else {
         eachEnemy.show();
         eachEnemy.move();
@@ -93,8 +95,8 @@ function updateGameCanvas() {
     ctx.fillStyle = "black";
     ctx.font = "2vw Arial";
     ctx.textAlign = "center";
-    ctx.fillText("You Died", canvas.width / 2, canvas.height / 2 - 20);
-    ctx.fillText("Try again", canvas.width / 2, canvas.height / 2 + 20);
+    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 20);
+    ctx.fillText(`You got ${point} point`, canvas.width / 2, canvas.height / 2 + 20);
   }
 
   // setInterval(updateEnemy(enemy), 4000);
@@ -108,6 +110,7 @@ window.addEventListener(
       if (boolGame) {
         player.speedY -= 5;
         jumpBool = false;
+        jumpSound.play()
       } else {
         startGame();
         boolGame = true;
@@ -121,6 +124,7 @@ function click_function() {
   if (boolGame) {
     player.speedY -= 3;
     jumpBool = false;
+    jumpSound.play()
   } else {
     startGame();
     boolGame = true;
@@ -161,6 +165,12 @@ function levelDesign() {
 
   ctx.fillStyle = "gray";
   ctx.fillRect(0, c.height - 10, c.width, 10);
+
+  if (gameScreen === 1) {
+  ctx.font = "1vw Arial";
+  ctx.textAlign = "center"
+  ctx.fillText(`${point} point`, 40, canvas.height - 100);
+  }
 }
 
 canvasUpdate = setInterval(updateGameCanvas, 15);
