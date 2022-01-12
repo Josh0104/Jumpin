@@ -8,9 +8,6 @@ var canvasUpdate;
 var gameScreen = 0;
 var boolHit = true;
 
-
-
-
 function startGame() {
   // console.log("This");
   gameCanvas.start();
@@ -31,7 +28,7 @@ function startGame() {
 function createEnemy(number) {
   boolHit = true;
   if (number === 0) {
-    enemies[number] = new Enemy(7, "red");
+    enemies[number] = new Enemy(Math.floor(Math.random() * 10) + 7, "red");
   } else {
     enemies[number] = new Enemy(5, "green");
   }
@@ -51,7 +48,6 @@ var gameCanvas = {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
 };
-
 
 function updateGameCanvas() {
   console.log(gameScreen + " " + boolHit);
@@ -90,16 +86,15 @@ function updateGameCanvas() {
   } else if (gameScreen === 2) {
     let canvas = gameCanvas.canvas;
     let ctx = canvas.getContext("2d");
-  
+
     ctx.fillStyle = "rgb(255,0,0)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = "black";
     ctx.font = "2vw Arial";
     ctx.textAlign = "center";
-    ctx.fillText("You Died", canvas.width/2, canvas.height/2 - 20)
-    ctx.fillText("Try again", canvas.width/2, canvas.height/2 + 20)
-
+    ctx.fillText("You Died", canvas.width / 2, canvas.height / 2 - 20);
+    ctx.fillText("Try again", canvas.width / 2, canvas.height / 2 + 20);
   }
 
   // setInterval(updateEnemy(enemy), 4000);
@@ -136,8 +131,10 @@ function click_function() {
 
 function getDist() {
   for (let eachEnemy of enemies) {
-    var distX = player.x + player.width / 2 - (eachEnemy.x + eachEnemy.width / 2);
-    var distY = player.y + player.height / 2 - (eachEnemy.y + eachEnemy.height / 2);
+    var distX =
+      player.x + player.width / 2 - (eachEnemy.x + eachEnemy.width / 2);
+    var distY =
+      player.y + player.height / 2 - (eachEnemy.y + eachEnemy.height / 2);
     var distXY = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
 
     if (distXY < player.width / 2 + eachEnemy.width / 2) {
