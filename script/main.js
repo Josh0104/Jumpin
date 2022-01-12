@@ -63,7 +63,7 @@ function updateGameCanvas() {
     if (getDist() && boolHit) {
       console.log(getDist());
       console.log("Hit");
-      gameScreen = 0;
+      gameScreen = 2;
       boolGame = false;
       boolHit = false;
       player = null;
@@ -88,6 +88,18 @@ function updateGameCanvas() {
       }
     }
   } else if (gameScreen === 2) {
+    let canvas = gameCanvas.canvas;
+    let ctx = canvas.getContext("2d");
+  
+    ctx.fillStyle = "rgb(255,0,0)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "black";
+    ctx.font = "2vw Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("You Died", canvas.width/2, canvas.height/2 - 20)
+    ctx.fillText("Try again", canvas.width/2, canvas.height/2 + 20)
+
   }
 
   // setInterval(updateEnemy(enemy), 4000);
