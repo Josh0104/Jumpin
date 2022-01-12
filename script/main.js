@@ -28,7 +28,7 @@ function startGame() {
 function createEnemy(number) {
   boolHit = true;
   if (number === 0) {
-    enemies[number] = new Enemy(Math.floor(Math.random() * 15) + 9, "red");
+    enemies[number] = new Enemy(Math.floor(Math.random() * 12) + 8, "red");
   } else {
     enemies[number] = new Enemy(5, "green");
   }
@@ -106,7 +106,7 @@ window.addEventListener(
     if (event.code === "Space" && jumpBool) {
       // console.log("This is running");
       if (boolGame) {
-        player.speedY -= 3;
+        player.speedY -= 5;
         jumpBool = false;
       } else {
         startGame();
