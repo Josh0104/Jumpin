@@ -7,16 +7,24 @@ var boolGame = false;
 var canvasUpdate;
 var gameScreen = 0;
 var boolHit = true;
-var point = 0;
+var point;
+var highScore;
+var newHighscore;
 var jumpSound = new Audio("../sound/jump.wav")
-
+console.log(localStorage.getItem("point_Jumpin"))
+if(localStorage.getItem("point_Jumpin") == null) {
+  localStorage.setItem("point_Jumpin", 0)
+} else {
+  highScore  = localStorage.getItem("point_Jumpin")
+}
+ 
 function startGame() {
   // console.log("This");
   gameCanvas.start();
   gameScreen = 1;
   player = new Player(30, 310, "blue", 30, 30);
   enemies = [];
-
+  point = 0;
   // enemy = new component(800, 330, "green", 20, 20);
   // enemy1 = new component(800,130,"yellow",20,20);
   createEnemy(0);
@@ -58,7 +66,7 @@ function updateGameCanvas() {
     levelDesign();
     player.update();
   } else if (gameScreen === 1) {
-    if (getDist() && boolHit) {
+    if (getDist() && boolHit) { //When the player die
       console.log(getDist());
       console.log("Hit");
       gameScreen = 2;
@@ -66,6 +74,11 @@ function updateGameCanvas() {
       boolHit = false;
       player = null;
       enemies = null;
+      if(point > highScore) {
+        highScore = point;
+        localStorage.setItem("point_Jumpin", highScore)
+        newHighscore = true;
+      }
       return;
     }
     gameCanvas.clear();
@@ -95,8 +108,16 @@ function updateGameCanvas() {
     ctx.fillStyle = "black";
     ctx.font = "2vw Arial";
     ctx.textAlign = "center";
-    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 20);
-    ctx.fillText(`You got ${point} point`, canvas.width / 2, canvas.height / 2 + 20);
+    if (newHighscore) {
+    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 10);
+    ctx.fillText(`You got a new high score ${highScore} point`, canvas.width / 2, canvas.height / 2 + 20);
+    ctx.fillText(`${highScore} point`, canvas.width / 2, canvas.height / 2 + 50);
+    newHighscore = false;
+    } else {
+      ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 10);
+      ctx.fillText(`You got ${point} point`, canvas.width / 2, canvas.height / 2 + 20);
+      ctx.fillText(`Your high score is ${highScore} point`, canvas.width / 2, canvas.height / 2 + 50);
+    }
   }
 
   // setInterval(updateEnemy(enemy), 4000);
@@ -111,7 +132,10 @@ window.addEventListener(
         player.speedY -= 5;
         jumpBool = false;
         jumpSound.play()
-      } else {
+        return
+      } 
+      if (event.code === "Space"){
+        console.log("Totot")
         startGame();
         boolGame = true;
       }
@@ -122,7 +146,7 @@ window.addEventListener(
 
 function click_function() {
   if (boolGame) {
-    player.speedY -= 3;
+    player.speedY -= 5;
     jumpBool = false;
     jumpSound.play()
   } else {
@@ -167,6 +191,7 @@ function levelDesign() {
   ctx.fillRect(0, c.height - 10, c.width, 10);
 
   if (gameScreen === 1) {
+    ctx.fillStyle = "black";
   ctx.font = "1vw Arial";
   ctx.textAlign = "center"
   ctx.fillText(`${point} point`, 40, canvas.height - 100);
