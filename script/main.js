@@ -28,7 +28,7 @@ function startGame() {
 function createEnemy(number) {
   boolHit = true;
   if (number === 0) {
-    enemies[number] = new Enemy(Math.floor(Math.random() * 10) + 7, "red");
+    enemies[number] = new Enemy(Math.floor(Math.random() * 15) + 9, "red");
   } else {
     enemies[number] = new Enemy(5, "green");
   }

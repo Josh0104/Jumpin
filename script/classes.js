@@ -1,4 +1,3 @@
-
 class Enemy {
   constructor(speedX, color) {
     this.x = 800;
@@ -29,11 +28,11 @@ function Player(x, y, color, width, height) {
   this.y = y;
   this.speedX = 0;
   this.speedY = 0;
-  this.gravity = 0.5;
+  this.gravity = 1;
   this.gravitySpeed = 0;
   this.update = function () {
     let c = gameCanvas.canvas;
-    let ctx1 = c.getContext("2d")
+    let ctx1 = c.getContext("2d");
     ctx1.fillStyle = this.color;
     ctx1.fillRect(this.x, this.y, this.width, this.height);
   };
@@ -47,7 +46,7 @@ function Player(x, y, color, width, height) {
   this.hitTop = function () {
     var rockTop = gameCanvas.canvas.height - this.height * 3.5;
     if (this.y < rockTop) {
-      this.speedY += 7;
+      this.speedY += 10;
     }
   };
 
